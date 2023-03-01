@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material";
 
 // export const defaultTools: Array<string> = ["Google Search", "Math JS", "Now"];
 
-export const defaultTools: Array<string> = ["Math JS", "Now"];
+export const defaultTools: Array<string> = ["JavaScript"];
 
 // export const prompt_template = `You are an AI assistant with several tools available to you. The tools are the following:
 // TOOL_DEFINITIONS
@@ -12,7 +12,7 @@ export const defaultTools: Array<string> = ["Math JS", "Now"];
 // User: USER_INPUT
 // Assistant:`;
 
-export const prompt_template = `你是一名AI助理，并且配备了几种工具可以使用。这些工具分别是：
+export const prompt_template = `你是一名AI助理，并且配备了几种工具可以使用，你可以根据情况决定是否使用这些工具。这些工具分别是：
 TOOL_DEFINITIONS
 切记：不要嵌套着使用工具！让每个工具的指令都相互分离！
 
