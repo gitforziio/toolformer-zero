@@ -14,33 +14,48 @@ export enum CompletionType {
 }
 
 export function getPayload(completionItem: CompletionItem) {
-	if (completionItem.type == CompletionType.DEFAULT) {
-		return completionItem.text;
-	} else if (completionItem.type == CompletionType.TOOL) {
-		return sanitizeText(
+	// return completionItem.text;
+	if (completionItem.type === CompletionType.DEFAULT) {
+		// const result = completionItem.text;
+		const result = completionItem.text.replace("】】】", "");
+		console.log(result);
+		return result;
+		// return completionItem.text.replace("】】】", "");
+	} else if (completionItem.type === CompletionType.TOOL) {
+		const result = sanitizeText(
 			completionItem.text,
-			completionItem.tool?.getName() + "("
+			`${completionItem.tool?.getName()}`
 		);
+		console.log(result);
+		return result;
 	}
-	return completionItem.text.replace("]", "");
+	const result = completionItem.text.replace("】】】", "");
+	console.log(result);
+	return result;
 }
 
 export function getToolInput(completionItem: CompletionItem) {
 	let payload = getPayload(completionItem);
-	return payload.split("->")[0];
+	console.log(payload);
+	return payload.split("→→→")[0];
 }
 
 export function getToolOutput(completionItem: CompletionItem) {
 	let payload = getPayload(completionItem);
-	let split = payload.split("->");
-	return split[split.length - 1];
+	let split = payload.split("→→→");
+	console.log(split);
+	const result =  split[split.length - 1];
+	console.log(result);
+	return result;
 }
 
 function sanitizeText(text: string, toolKey: string) {
+	console.log({text, toolKey});
+	// return text;
 	return text
-		.replace("[", "")
-		.replace(toolKey, "")
-		.replace(")", "")
-		.replace("]", "")
+		.replace("【【【", "")
+		.replace(`${toolKey}「「「`, "")
+		.replace("」」」", "")
+		.replaceAll(/】】】/g, "")
 		.trim();
 }

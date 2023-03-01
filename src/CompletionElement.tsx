@@ -54,6 +54,7 @@ export function CompletionElement(props: CompletionProps) {
 							<CompletionTypography
 								text={word + (index === map.length - 1 ? "" : " ")}
 								index={index}
+								key={`${index}`}
 							></CompletionTypography>
 						))}
 				</React.Fragment>

@@ -67,6 +67,7 @@ export function ToolSetup(props: SetupProps) {
 						<List>
 							{availableTools.map((t, index) => (
 								<ToolListItem
+									key={`tt-${index}`}
 									tool={new t()}
 									index={index}
 									activeItem={activeItem}

@@ -135,13 +135,15 @@ function App() {
 		//For each tool, add their definitions and examples
 		curActiveTools.current.forEach((tool) => {
 			toolDefinitions += `${tool.getName()}: ${tool.getDefinition()}\n`;
-			toolExamples += `User: ${tool.getExamplePrompt()}\nAssistant:${tool.getExampleCompletion()}\n`;
+			// toolExamples += `User: ${tool.getExamplePrompt()}\nAssistant:${tool.getExampleCompletion()}\n`;
+			toolExamples += `用户：${tool.getExamplePrompt()}\nAI助理：${tool.getExampleCompletion()}\n`;
 			//If multi-examples are defined, check for satisfied dependencies before adding
 			if (
 				tool.getExampleMultiPrompt() &&
 				exampleMultiDependenciesSatisfied(tool)
 			) {
-				toolExamples += `User: ${tool.getExampleMultiPrompt()}\nAssistant:${tool.getExampleMultiCompletion()}\n`;
+				// toolExamples += `User: ${tool.getExampleMultiPrompt()}\nAssistant:${tool.getExampleMultiCompletion()}\n`;
+				toolExamples += `用户：${tool.getExampleMultiPrompt()}\nAI助理：${tool.getExampleMultiCompletion()}\n`;
 			}
 		});
 		//Format template
@@ -241,7 +243,8 @@ function App() {
 	function parseCompletion() {
 		let toolUsed = false;
 		//Match for tools
-		let matches = newCompletion.current.match(/([[])\S.+?(->)/g);
+		let matches = newCompletion.current.match(/(【【【)\S.+?(→→→)/g);
+		console.log(newCompletion);
 		if (matches) {
 			//If matches exist, strip out non-tool string and complete existing item if exists
 			let preToolString = newCompletion.current.replace(matches[0], "");
@@ -256,7 +259,7 @@ function App() {
 		} else {
 			//If no matches exist, we are just streaming a normal completion
 			//We make sure to only show characters up to a potential [
-			let split = newCompletion.current.split("[");
+			let split = newCompletion.current.split("【【【");
 			amendDefaultItem(split[0], false);
 		}
 		//For each completed parse, we update the state to trigger a re-render
@@ -313,7 +316,7 @@ function App() {
 	function getTool(text: string) {
 		//Get appropriate active tool for completion item if available
 		return curActiveTools.current.find((tool) => {
-			if (text.includes(tool.getName() + "(")) {
+			if (text.includes(tool.getName() + "「「「")) {
 				return tool;
 			}
 		});
@@ -321,7 +324,7 @@ function App() {
 
 	function setToolResult(resultString: string) {
 		//Add tool result to last completion item, then continue completion stream
-		resultString += "]";
+		// resultString += "]";
 		let lastCompletion =
 			curCompletion.current[curCompletion.current.length - 1];
 		lastCompletion.text += resultString;
@@ -379,7 +382,7 @@ function App() {
 				{setupCompleted && !toolSetupActive && (
 					<div className="Completion-Parent">
 						{completion.map((item, index) => (
-							<CompletionElement completion={item}></CompletionElement>
+							<CompletionElement completion={item} key={`cc-${index}`}></CompletionElement>
 						))}
 					</div>
 				)}
@@ -390,7 +393,7 @@ function App() {
 						{toast}
 					</Alert>
 				)}
-				<Link
+				{/* <Link
 					underline={"none"}
 					color={"#00000077"}
 					href={"https://github.com/minosvasilias"}
@@ -399,7 +402,7 @@ function App() {
 					sx={githubLinkStyle}
 				>
 					Created by Markus Sobkowski
-				</Link>
+				</Link> */}
 			</Grid>
 		</ThemeProvider>
 	);

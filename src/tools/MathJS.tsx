@@ -19,7 +19,8 @@ export class MathJS extends Tool {
 	}
 
 	getDefinition(): string {
-		return "This allows you to evaluate mathematical expressions using the math.js library.";
+		// return "This allows you to evaluate mathematical expressions using the math.js library.";
+		return "该工具允许你使用 math.js 库来执行数学表达式。";
 	}
 
 	getExamplePrompt(): string {
