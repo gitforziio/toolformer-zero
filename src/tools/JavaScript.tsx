@@ -17,7 +17,7 @@ export class JavaScript extends Tool {
 
 	getDefinition(): string {
 		// return "This allows you to evaluate mathematical expressions using the math.js library.";
-		return "该工具允许你使用 JavaScript 代码来完成各项可能的任务。请注意：1、代码将在用户的浏览器中直接执行，请勿提供危险代码。2、即使代码没有输出结果，也请在代码后加上`→→→`";
+		return "该工具允许你使用 JavaScript 代码来完成各项可能的任务。请注意：1、代码将在用户的浏览器中直接执行，请勿提供危险代码，以及可能造成用户浏览器卡顿的代码。2、即使代码没有输出结果，也请在代码后加上`→→→`";
 	}
 
 	getExamplePrompt(): string {
