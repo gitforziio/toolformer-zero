@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+
+.Completion-Parent {
+	max-width: 700px;
+  	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
