@@ -178,6 +178,7 @@ function App() {
 			},
 			method: "POST",
 			body: JSON.stringify({
+				// model: "text-curie-001",
 				model: "text-davinci-003",
 				prompt: final_prompt,
 				temperature: 0.7,
