@@ -131,8 +131,26 @@ function App() {
 
 	async function getCompletion(prompt: string) {
 		//Stream completion from OpenAI);
+// <<<<<<< new_model_qian
 		// !TODO: 模型选择，目前有chatCompletion和textCompletion两种可选
 		const es = await chatCompletion(prompt, curActiveTools.current);
+// =======
+// 		var es = await fetch("https://api.openai.com/v1/completions", {
+// 			headers: {
+// 				"Content-Type": "application/json",
+// 				Authorization: "Bearer " + getToolParam("Global", "openaiApiKey"),
+// 			},
+// 			method: "POST",
+// 			body: JSON.stringify({
+// 				// model: "text-curie-001",
+// 				model: "text-davinci-003",
+// 				prompt: final_prompt,
+// 				temperature: 0.7,
+// 				max_tokens: 500,
+// 				stream: true,
+// 			}),
+// 		});
+// >>>>>>> master
 		const reader = es.body?.pipeThrough(new TextDecoderStream()).getReader();
 		if (!reader) return;
 
