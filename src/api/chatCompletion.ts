@@ -3,6 +3,7 @@ import { Tool } from "../tools/base/Tool";
 import { getToolParam } from "../Cookies";
 
 export async function chatCompletion(user_message: string, curActiveTools: Tool[]) {
+  console.log("\n\n\n");
   // chat模型（新）
   // 文档：https://platform.openai.com/docs/api-reference/chat/create
   const es = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -30,9 +31,9 @@ function generateChatMessage(
   return [
     {
       role: "system",
-      content: `你是一名AI助理，并且配备了几种工具可以使用，你可以根据情况决定是否使用这些工具。这些工具分别是：
+      content: `你（assistant）是一名帮助用户（user）完成任务的AI助理，并且配备了几种工具可以使用，你（assistant）可以根据情况决定是否使用这些工具。这些工具分别是：
       ${toolDefinitions}
-      切记：不要嵌套着使用工具！让每个工具的指令都相互分离！`,
+      切记：不要嵌套着使用工具！让每个工具的指令都相互分离！并且，假如代码没有输出结果，那么就请在代码后的“→→→”后加上“null”。`,
     },
     ...toolExamples,
     {

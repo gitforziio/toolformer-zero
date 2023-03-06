@@ -6,7 +6,7 @@ import {
 	AlertTitle,
 	Grid,
 	IconButton,
-	Link,
+	// Link,
 	ThemeProvider,
 } from "@mui/material";
 import { theme } from "./Constants";
@@ -15,7 +15,7 @@ import { CompletionElement } from "./CompletionElement";
 import { PromptInput } from "./PromptInput";
 import {
 	alertStyle,
-	githubLinkStyle,
+	// githubLinkStyle,
 	rootGridStyle,
 	toolButtonStyle,
 } from "./MuiStyles";
@@ -133,6 +133,7 @@ function App() {
 		//Stream completion from OpenAI);
 // <<<<<<< new_model_qian
 		// !TODO: 模型选择，目前有chatCompletion和textCompletion两种可选
+		console.log("\n\n[getCompletion]\n\n");
 		const es = await chatCompletion(prompt, curActiveTools.current);
 // =======
 // 		var es = await fetch("https://api.openai.com/v1/completions", {
