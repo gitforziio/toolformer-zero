@@ -9,7 +9,7 @@ import {
 	Link,
 	ThemeProvider,
 } from "@mui/material";
-import { prompt_template, theme } from "./Constants";
+import { theme } from "./Constants";
 import { CompletionItem, CompletionType, getToolInput } from "./CompletionItem";
 import { CompletionElement } from "./CompletionElement";
 import { PromptInput } from "./PromptInput";
@@ -25,6 +25,7 @@ import { Setup } from "./Setup";
 import ConstructionIcon from "@mui/icons-material/Construction";
 import { getActiveToolNames, getToolParam, getToolParams } from "./Cookies";
 import { allTools } from "./tools/base/AllTools";
+import { chatCompletion } from "./api";
 
 function App() {
 	const [setupCompleted, setSetupCompleted] = useState<boolean | undefined>(
@@ -124,74 +125,38 @@ function App() {
 		newCompletion.current = "";
 		setRequestActive(true);
 		//Inject prompt into template and get completion
-		const final_prompt = formatPrompt(prompt);
-		getCompletion(final_prompt);
+		getCompletion(prompt);
 	}
 
-	function formatPrompt(userPrompt: string) {
-		//Format prompt using all active tools and user prompt
-		let toolDefinitions = "";
-		let toolExamples = "";
-		//For each tool, add their definitions and examples
-		curActiveTools.current.forEach((tool) => {
-			toolDefinitions += `${tool.getName()}: ${tool.getDefinition()}\n`;
-			// toolExamples += `User: ${tool.getExamplePrompt()}\nAssistant:${tool.getExampleCompletion()}\n`;
-			toolExamples += `用户：${tool.getExamplePrompt()}\nAI助理：${tool.getExampleCompletion()}\n`;
-			//If multi-examples are defined, check for satisfied dependencies before adding
-			if (
-				tool.getExampleMultiPrompt() &&
-				exampleMultiDependenciesSatisfied(tool)
-			) {
-				// toolExamples += `User: ${tool.getExampleMultiPrompt()}\nAssistant:${tool.getExampleMultiCompletion()}\n`;
-				toolExamples += `用户：${tool.getExampleMultiPrompt()}\nAI助理：${tool.getExampleMultiCompletion()}\n`;
-			}
-		});
-		//Format template
-		const final_prompt = prompt_template
-			.replace("TOOL_DEFINITIONS", toolDefinitions)
-			.replace("TOOL_EXAMPLES", toolExamples)
-			.replace("DATE_TODAY", new Date().toDateString())
-			.replace("USER_INPUT", userPrompt);
-		return final_prompt;
-	}
 
-	function exampleMultiDependenciesSatisfied(tool: Tool) {
-		//Iterate through multi example dependencies, and check if corresponding tool
-		//implementing tool name is active
-		let allDependenciesSatisfied = true;
-		tool.getExampleMultiDependencies().forEach((toolName) => {
-			const satisfied =
-				curActiveTools.current.findIndex((activeTool) => {
-					return activeTool.getName() == toolName;
-				}) != -1;
-			allDependenciesSatisfied = satisfied ? allDependenciesSatisfied : false;
-		});
-		return allDependenciesSatisfied;
-	}
-
-	async function getCompletion(final_prompt: string) {
+	async function getCompletion(prompt: string) {
 		//Stream completion from OpenAI);
-		var es = await fetch("https://api.openai.com/v1/completions", {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: "Bearer " + getToolParam("Global", "openaiApiKey"),
-			},
-			method: "POST",
-			body: JSON.stringify({
-				// model: "text-curie-001",
-				model: "text-davinci-003",
-				prompt: final_prompt,
-				temperature: 0.7,
-				max_tokens: 500,
-				stream: true,
-			}),
-		});
+// <<<<<<< new_model_qian
+		// !TODO: 模型选择，目前有chatCompletion和textCompletion两种可选
+		const es = await chatCompletion(prompt, curActiveTools.current);
+// =======
+// 		var es = await fetch("https://api.openai.com/v1/completions", {
+// 			headers: {
+// 				"Content-Type": "application/json",
+// 				Authorization: "Bearer " + getToolParam("Global", "openaiApiKey"),
+// 			},
+// 			method: "POST",
+// 			body: JSON.stringify({
+// 				// model: "text-curie-001",
+// 				model: "text-davinci-003",
+// 				prompt: final_prompt,
+// 				temperature: 0.7,
+// 				max_tokens: 500,
+// 				stream: true,
+// 			}),
+// 		});
+// >>>>>>> master
 		const reader = es.body?.pipeThrough(new TextDecoderStream()).getReader();
 		if (!reader) return;
 
 		//Update raw completion to include prompt
 		//(important to continue streams after tool evaluation)
-		rawCompletion.current = final_prompt;
+		rawCompletion.current = prompt;
 
 		//Stream completion either until a tool was used or the completion has ended
 		let toolUsed = false;
@@ -218,8 +183,9 @@ function App() {
 			if (json_string.length > 0) {
 				try {
 					const json = JSON.parse(json_string);
+					// console.log(json);
 					//Get completion token(s) received
-					let token: string = json.choices[0].text;
+					let token: string = json.choices[0].text ?? json.choices[0].delta?.content ?? '';
 					//Trim start of completion to avoid ugly whitespace
 					if (newCompletion.current.length == 0) token = token.trimStart();
 					//Amend completion data
